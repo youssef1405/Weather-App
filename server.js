@@ -33,5 +33,6 @@ app.get('/weather', (req, res) => {
 
 app.post('/weather', (req, res) => {
   projectData = { ...req.body };
+  console.log(projectData);
   res.send('post');
 });

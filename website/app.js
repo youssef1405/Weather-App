@@ -33,8 +33,16 @@ const postData = async (url, data = {}) => {
   });
 };
 
-generateBtn.addEventListener('click', () => {
-  gatherData(url).then((response) => {
+const getData = async (url) => {
+  const response = await fetch(url);
+  const data = await response.json();
+  // console.log('from getData', data);
+  return data;
+};
+
+generateBtn.addEventListener('click', async () => {
+  await gatherData(url).then((response) => {
     postData('/weather', response);
   });
+  getData('/weather');
 });
