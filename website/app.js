@@ -40,9 +40,23 @@ const getData = async (url) => {
   return data;
 };
 
+const updateUI = (data) => {
+  // console.log(data);
+  const dateHolder = document.getElementById('date');
+  const tempHolder = document.getElementById('temp');
+  const feelingHolder = document.getElementById('content');
+
+  dateHolder.textContent = `Date: ${data.date}`;
+  tempHolder.textContent = `Temperature: ${data.tempertaure}`;
+  feelingHolder.textContent = `Feeling: ${data.feelings}`;
+};
+
 generateBtn.addEventListener('click', async () => {
   await gatherData(url).then((response) => {
     postData('/weather', response);
   });
-  getData('/weather');
+
+  getData('/weather').then((data) => {
+    updateUI(data);
+  });
 });
