@@ -2,8 +2,7 @@
 const API_KEY = '4c78cc8e478223d16b16f9939ae05c6a';
 const UNITS = 'imperial';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?';
-const url = `${BASE_URL}zip=94040,us&appid=${API_KEY}&units=${UNITS}`;
-const feelings = document.getElementById('feelings');
+
 const generateBtn = document.getElementById('generate');
 const projectData = {};
 
@@ -11,12 +10,18 @@ const projectData = {};
 let d = new Date();
 let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
+const getAPIUrl = (base, zip, key, units) => {
+  return `${base}zip=${zip},us&appid=${key}&units=${units}`;
+};
+
 const gatherData = async (url) => {
+  const feelingsInputvalue = document.getElementById('feelings').value;
+
   const response = await fetch(url);
   const data = await response.json();
   projectData.tempertaure = data.main.temp;
   projectData.date = newDate;
-  projectData.feelings = feelings.value;
+  projectData.feelings = feelingsInputvalue;
   console.log(projectData);
   return projectData;
 };
@@ -52,6 +57,8 @@ const updateUI = (data) => {
 };
 
 generateBtn.addEventListener('click', async () => {
+  const zipcodeValue = document.getElementById('zip').value;
+  const url = getAPIUrl(BASE_URL, zipcodeValue, API_KEY, UNITS);
   await gatherData(url).then((response) => {
     postData('/weather', response);
   });
