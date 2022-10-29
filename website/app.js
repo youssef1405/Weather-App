@@ -1,6 +1,6 @@
 /* Global Variables */
 const API_KEY = '4c78cc8e478223d16b16f9939ae05c6a';
-const UNITS = 'imperial';
+const UNITS = 'metric';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?';
 const generateBtn = document.getElementById('generate');
 const projectData = {};
@@ -93,7 +93,7 @@ const updateUI = (data) => {
   document.getElementById('date').textContent = `Date: ${data.date}`;
   document.getElementById(
     'temp'
-  ).textContent = `Temperature: ${data.tempertaure}`;
+  ).textContent = `Temperature: ${data.tempertaure}C`;
   document.getElementById('content').textContent = `Feeling: ${data.feelings}`;
 };
 
