@@ -25,14 +25,14 @@ app.listen(3000, () => {
   console.log('listening on port 3000');
 });
 
-// Routes
-app.get('/weather', (req, res) => {
+// get Route
+app.get('/info', (req, res) => {
   console.log('get');
   res.send(projectData);
 });
 
-app.post('/weather', (req, res) => {
+// post route
+app.post('/info', (req, res) => {
   projectData = { ...req.body };
-  console.log(projectData);
-  res.send('post');
+  res.send(projectData);
 });

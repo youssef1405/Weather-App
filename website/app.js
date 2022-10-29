@@ -2,7 +2,6 @@
 const API_KEY = '4c78cc8e478223d16b16f9939ae05c6a';
 const UNITS = 'imperial';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?';
-
 const generateBtn = document.getElementById('generate');
 const projectData = {};
 
@@ -16,22 +15,42 @@ const getTodaysDate = () => {
   return newDate;
 };
 
+/**
+ * this function builds the API endpoint - base + zip + key + untis
+ * @param base the base url of the API
+ * @param zip zip code entered by user
+ * @param key API key
+ * @param units units of data received the API
+ * @returns custom API endpoint
+ */
 const getAPIUrl = (base, zip, key, units) => {
   return `${base}zip=${zip},us&appid=${key}&units=${units}`;
 };
 
+/**
+ * This function collects data from Weather API and user and saves
+ * everything in an object (projectData)
+ * @param url - API endpoint
+ * @returns an object containing API data + user response
+ */
 const gatherData = async (url) => {
-  const feelingsInputvalue = document.getElementById('feelings').value;
-
   const response = await fetch(url);
-  const data = await response.json();
-  projectData.tempertaure = data.main.temp;
-  projectData.date = getTodaysDate();
-  projectData.feelings = feelingsInputvalue;
-  console.log(projectData);
-  return projectData;
+  try {
+    const data = await response.json();
+    projectData.tempertaure = data.main.temp;
+    projectData.date = getTodaysDate();
+    projectData.feelings = document.getElementById('feelings').value;
+    return projectData;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
+/**
+ * this function sends the gathered data to the server side
+ * @param url post route (/info)
+ * @param data gathered data
+ */
 const postData = async (url, data = {}) => {
   const response = await fetch(url, {
     method: 'POST',
@@ -42,34 +61,59 @@ const postData = async (url, data = {}) => {
       feelings: data.feelings,
     }),
   });
+
+  try {
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const getData = async (url) => {
+/**
+ * This function fetches data from the app endpoint
+ * @param url /info
+ * @returns data fetched from the app endpoint
+ */
+const retrieveData = async (url) => {
   const response = await fetch(url);
-  const data = await response.json();
-  // console.log('from getData', data);
-  return data;
+  try {
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
+/**
+ * this function updates the page with data fetched from app endpoint
+ * @param data data fetched from the app endpoint
+ */
 const updateUI = (data) => {
-  // console.log(data);
-  const dateHolder = document.getElementById('date');
-  const tempHolder = document.getElementById('temp');
-  const feelingHolder = document.getElementById('content');
-
-  dateHolder.textContent = `Date: ${data.date}`;
-  tempHolder.textContent = `Temperature: ${data.tempertaure}`;
-  feelingHolder.textContent = `Feeling: ${data.feelings}`;
+  document.getElementById('date').textContent = `Date: ${data.date}`;
+  document.getElementById(
+    'temp'
+  ).textContent = `Temperature: ${data.tempertaure}`;
+  document.getElementById('content').textContent = `Feeling: ${data.feelings}`;
 };
 
-generateBtn.addEventListener('click', async () => {
+/**
+ * An event handler which is exexuted the "generate" button is clicked
+ *
+ */
+const handleClick = async () => {
   const zipcodeValue = document.getElementById('zip').value;
   const url = getAPIUrl(BASE_URL, zipcodeValue, API_KEY, UNITS);
+
+  // gather all data then posted to the app endpoint
   await gatherData(url).then((response) => {
-    postData('/weather', response);
+    postData('/info', response);
   });
 
-  getData('/weather').then((data) => {
+  // get the data from the app end point the update the page
+  retrieveData('/info').then((data) => {
     updateUI(data);
   });
-});
+};
+
+generateBtn.addEventListener('click', handleClick);
