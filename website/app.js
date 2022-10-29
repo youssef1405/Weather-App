@@ -6,9 +6,15 @@ const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?';
 const generateBtn = document.getElementById('generate');
 const projectData = {};
 
-// Create a new date instance dynamically with JS
-let d = new Date();
-let newDate = d.getMonth() + 1 + '-' + d.getDate() + '-' + d.getFullYear();
+/**
+ * this function produces today's date in mm-dd-yyyy format
+ * @returns today's date in mm-dd-yyyy format
+ */
+const getTodaysDate = () => {
+  let d = new Date();
+  let newDate = d.getMonth() + 1 + '-' + d.getDate() + '-' + d.getFullYear();
+  return newDate;
+};
 
 const getAPIUrl = (base, zip, key, units) => {
   return `${base}zip=${zip},us&appid=${key}&units=${units}`;
@@ -20,7 +26,7 @@ const gatherData = async (url) => {
   const response = await fetch(url);
   const data = await response.json();
   projectData.tempertaure = data.main.temp;
-  projectData.date = newDate;
+  projectData.date = getTodaysDate();
   projectData.feelings = feelingsInputvalue;
   console.log(projectData);
   return projectData;
